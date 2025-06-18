@@ -30,6 +30,12 @@
       color: #5c5446;
       display: none;
     }
+    #imageName {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: #5c5446;
+      display: none;
+    }
     #title {
       font-family: 'Noto Sans TC', sans-serif;
       font-size: 1.4rem;
@@ -82,12 +88,13 @@
   </style>
 </head>
 <body>
-  <h1>᪥ 抽取畫圖主題 ᪥</h1>
+  <h1>抽取畫圖主題</h1>
   <br>
   <hr>
   <br>
   <div id="subheading" class="fade">您抽到的文章名稱及畫作</div>
   <div id="title" class="fade">(請點按鈕開始抽取)</div>
+  <div id="imageName" class="fade"></div>
   <div id="links" class="fade"></div>
   <img id="image" class="fade" style="display:none;" alt="文章圖片">
   <div id="loader">正在讀取資料…</div>
@@ -114,12 +121,14 @@
       const linkContainer = document.getElementById('links');
       const img = document.getElementById('image');
       const subheading = document.getElementById('subheading');
+      const imageNameEl = document.getElementById('imageName');
 
       titleEl.textContent = '';
       linkContainer.innerHTML = '';
       img.style.display = 'none';
       subheading.style.display = 'block';
       applyFadeIn(subheading);
+      imageNameEl.style.display = 'none';
 
       const res = await fetch(sheetURL);
       const text = await res.text();
@@ -129,10 +138,18 @@
 
       const randomRow = data[Math.floor(Math.random() * data.length)];
       const title = randomRow[0];
+      const imageName = randomRow[1]?.trim();
+
       titleEl.textContent = title;
       applyFadeIn(titleEl);
 
-      for (let i = 1; i < headers.length; i++) {
+      if (imageName) {
+        imageNameEl.textContent = imageName;
+        imageNameEl.style.display = 'block';
+        applyFadeIn(imageNameEl);
+      }
+
+      for (let i = 2; i < headers.length; i++) {
         if (randomRow[i]) {
           const div = document.createElement('div');
           div.className = 'link-group';
