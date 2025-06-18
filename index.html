@@ -14,16 +14,22 @@
     }
     h1 {
       font-size: 2rem;
-      margin-bottom: 10px;
+      margin-bottom: 30px;
       color: #7b5312;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 20px 0;
     }
     #subheading {
       font-size: 1.2rem;
       margin-bottom: 15px;
       color: #5c5446;
+      display: none;
     }
     #title {
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       margin: 20px 0;
       font-weight: bold;
       color: #7b5312;
@@ -63,8 +69,6 @@
       margin-top: 15px;
       color: #999;
     }
-
-    /* 淡入效果 */
     .fade {
       opacity: 0;
       transition: opacity 0.6s ease-in;
@@ -76,7 +80,9 @@
 </head>
 <body>
   <h1>抽取畫圖主題</h1>
-  <div id="subheading">您抽到的文章名稱及畫作</div>
+  <br><br>
+  <hr>
+  <div id="subheading" class="fade">您抽到的文章名稱及畫作</div>
   <div id="title" class="fade">(請點按鈕開始抽取)</div>
   <div id="links" class="fade"></div>
   <img id="image" class="fade" style="display:none;" alt="文章圖片">
@@ -103,10 +109,13 @@
       const titleEl = document.getElementById('title');
       const linkContainer = document.getElementById('links');
       const img = document.getElementById('image');
+      const subheading = document.getElementById('subheading');
 
       titleEl.textContent = '';
       linkContainer.innerHTML = '';
       img.style.display = 'none';
+      subheading.style.display = 'block';
+      applyFadeIn(subheading);
 
       const res = await fetch(sheetURL);
       const text = await res.text();
