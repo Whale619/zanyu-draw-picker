@@ -32,7 +32,7 @@
     }
     #imageName {
       font-size: 1rem;
-      margin-top: 20px;
+      margin-top: 15px;
       margin-bottom: 5px;
       color: #5c5446;
       display: none;
@@ -149,14 +149,14 @@
         if (randomRow[i]) {
           const div = document.createElement('div');
           div.className = 'link-group';
-          div.innerHTML = `<span class=\"link-label\">${headers[i]}:</span><a href=\"${randomRow[i]}\" target=\"_blank\">${randomRow[i]}</a>`;
+          div.innerHTML = `<span class="link-label">${headers[i]}:</span><a href="${randomRow[i]}" target="_blank">${randomRow[i]}</a>`;
           linkContainer.appendChild(div);
         }
       }
       applyFadeIn(linkContainer);
 
       if (imageName) {
-        imageNameEl.innerHTML = `畫作名稱：${imageName}`;
+        imageNameEl.innerHTML = `<br>作品名稱：${imageName}`;
         imageNameEl.style.display = 'block';
         applyFadeIn(imageNameEl);
       }
