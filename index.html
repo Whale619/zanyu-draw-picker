@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>抽取畫圖主題</title>
+  <style>
+    body {
+      font-family: "Noto Serif TC", serif;
+      background: url('/mnt/data/e640aea6-2930-411a-9d39-dcd5cb5b12eb.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #5c4320;
+      padding: 40px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #7b5312;
+    }
+    #subheading {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #5c5446;
+    }
+    #title {
+      font-size: 1.8rem;
+      margin: 20px 0;
+      font-weight: bold;
+      color: #7b5312;
+    }
+    .link-group {
+      margin: 10px 0;
+    }
+    .link-label {
+      font-weight: bold;
+      margin-right: 5px;
+      color: #7b5312;
+    }
+    a {
+      color: #1a3e6e;
+      text-decoration: underline;
+    }
+    button {
+      padding: 10px 25px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      background-color: #f0e5d8;
+      cursor: pointer;
+      margin-top: 30px;
+      color: #5c4320;
+    }
+    img {
+      margin: 20px auto;
+      max-width: 80%;
+      border-radius: 10px;
+      cursor: pointer;
+      display: block;
+    }
+    #loader {
+      display: none;
+      font-style: italic;
+      margin-top: 15px;
+      color: #999;
+    }
+
+    /* 淡入效果 */
+    .fade {
+      opacity: 0;
+      transition: opacity 0.6s ease-in;
+    }
+    .show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>抽取畫圖主題</h1>
+  <div id="subheading">您抽到的文章名稱及畫作</div>
+  <div id="title" class="fade">(請點按鈕開始抽取)</div>
+  <div id="links" class="fade"></div>
+  <img id="image" class="fade" style="display:none;" alt="文章圖片">
+  <div id="loader">正在讀取資料…</div>
+  <br>
+  <button onclick="drawArticle()">隨機抽</button>
+
+  <script>
+    const sheetURL = "https://docs.google.com/spreadsheets/d/1yj1EB8eZOSvkBc0fLQIRefaO3OjiEh6Zm8-LcxfiUjc/export?format=csv";
+    const imageBase = "https://raw.githubusercontent.com/Whale619/Aurze-Mulo-article---images/main/";
+
+    function titleToFilename(title) {
+      return encodeURIComponent(title.trim()) + ".jpg";
+    }
+
+    function applyFadeIn(element) {
+      element.classList.remove('show');
+      void element.offsetWidth;
+      element.classList.add('show');
+    }
+
+    async function drawArticle() {
+      document.getElementById('loader').style.display = 'block';
+      const titleEl = document.getElementById('title');
+      const linkContainer = document.getElementById('links');
+      const img = document.getElementById('image');
+
+      titleEl.textContent = '';
+      linkContainer.innerHTML = '';
+      img.style.display = 'none';
+
+      const res = await fetch(sheetURL);
+      const text = await res.text();
+      const rows = text.trim().split('\n').map(row => row.split(','));
+      const headers = rows[0];
+      const data = rows.slice(1);
+
+      const randomRow = data[Math.floor(Math.random() * data.length)];
+      const title = randomRow[0];
+      titleEl.textContent = title;
+      applyFadeIn(titleEl);
+
+      for (let i = 1; i < headers.length; i++) {
+        if (randomRow[i]) {
+          const div = document.createElement('div');
+          div.className = 'link-group';
+          div.innerHTML = `<span class=\"link-label\">${headers[i]}:</span><a href=\"${randomRow[i]}\" target=\"_blank\">${randomRow[i]}</a>`;
+          linkContainer.appendChild(div);
+        }
+      }
+      applyFadeIn(linkContainer);
+
+      img.src = imageBase + titleToFilename(title);
+      img.style.display = 'block';
+      img.onclick = () => window.open(img.src, '_blank');
+      applyFadeIn(img);
+
+      document.getElementById('loader').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
