@@ -119,4 +119,55 @@
     async function drawArticle() {
       document.getElementById('loader').style.display = 'block';
       const titleEl = document.getElementById('title');
-      const linkContainer = docume
+      const linkContainer = document.getElementById('links');
+      const img = document.getElementById('image');
+      const subheading = document.getElementById('subheading');
+      const imageNameEl = document.getElementById('imageName');
+
+      titleEl.textContent = '';
+      linkContainer.innerHTML = '';
+      img.style.display = 'none';
+      subheading.style.display = 'block';
+      applyFadeIn(subheading);
+      imageNameEl.style.display = 'none';
+      imageNameEl.textContent = '';
+
+      const res = await fetch(sheetURL);
+      const text = await res.text();
+      const rows = text.trim().split('\n').map(row => row.split(','));
+      const headers = rows[0];
+      const data = rows.slice(1);
+
+      const randomRow = data[Math.floor(Math.random() * data.length)];
+      const title = randomRow[0];
+      const imageName = randomRow[1]?.trim();
+
+      titleEl.textContent = title;
+      applyFadeIn(titleEl);
+
+      for (let i = 2; i < headers.length; i++) {
+        if (randomRow[i]) {
+          const div = document.createElement('div');
+          div.className = 'link-group';
+          div.innerHTML = `<span class=\"link-label\">${headers[i]}:</span><a href=\"${randomRow[i]}\" target=\"_blank\">${randomRow[i]}</a>`;
+          linkContainer.appendChild(div);
+        }
+      }
+      applyFadeIn(linkContainer);
+
+      if (imageName) {
+        imageNameEl.innerHTML = `畫作名稱：${imageName}`;
+        imageNameEl.style.display = 'block';
+        applyFadeIn(imageNameEl);
+      }
+
+      img.src = imageBase + titleToFilename(title);
+      img.style.display = 'block';
+      img.onclick = () => window.open(img.src, '_blank');
+      applyFadeIn(img);
+
+      document.getElementById('loader').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
